@@ -1,0 +1,16 @@
+# Core web app
+Flask==3.1.2
+Flask-Limiter==3.8.0
+Flask-WTF==1.2.2
+python-dotenv==1.2.1
+requests==2.32.5
+
+# AI and retrieval
+chromadb==1.5.5
+edge-tts==7.2.7
+pypdf==4.2.0
+
+# Integrations and utilities
+qrcode==8.2
+Pillow==12.1.0
+twilio==9.10.0

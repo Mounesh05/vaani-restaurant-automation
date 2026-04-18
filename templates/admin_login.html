@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — AM Restaurant</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+
+<div class="login-shell">
+    <section class="login-card">
+        <div class="login-brand">
+            <span class="identity-badge" aria-hidden="true">AM</span>
+            <div>
+                <p class="eyebrow">Reservation Operations</p>
+                <h2>Admin Access</h2>
+            </div>
+        </div>
+        <p>Secure access to booking management dashboard.</p>
+
+        <form method="POST" class="login-form" autocomplete="off">
+            {# CSRF token — required by Flask-WTF for all POST forms #}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label for="pin">Admin PIN</label>
+            <input
+                id="pin"
+                type="password"
+                name="pin"
+                placeholder="Enter admin PIN"
+                autocomplete="current-password"
+                required
+                maxlength="20"
+            >
+            <button type="submit" class="primary-btn">Login</button>
+        </form>
+
+        {% if error %}
+        <div class="error-msg" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <a href="/" class="back-link">← Back to assistant</a>
+    </section>
+</div>
+
+</body>
+</html>

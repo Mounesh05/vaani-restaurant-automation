@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAANI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <header>
+        <div class="logo">🎙️</div>
+        <h1>AM Restaurant</h1>
+        <div class="divider">
+            <span></span>
+            <p>Voice Reservation Desk</p>
+            <span></span>
+        </div>
+    </header>
+
+    <div id="status-pill" class="status-pill" aria-hidden="true" title="Click to interrupt assistant">
+        <span id="status-dot">●</span> <span id="status-text">Ready to assist</span>
+    </div>
+    
+    <div id="error-banner" class="error-banner" style="display: none;"></div>
+
+    <div class="chips">
+        <button class="chip" onclick="sendChip('Book Table')">🍽️ Book Table</button>
+        <button class="chip" onclick="sendChip('Hours')">⏰ Hours</button>
+        <button class="chip" onclick="sendChip('Menu')">🥗 Menu</button>
+        <button class="chip" onclick="sendChip('Cancel')">❌ Cancel</button>
+    </div>
+
+    <div class="chat-wrapper">
+        <div id="chat-placeholder" class="chat-placeholder">
+            <div class="placeholder-icon">📄</div>
+            <div>
+                <strong>CONVERSATION</strong><br>
+                <span style="opacity: 0.6; font-style: italic;">Tap "Start Call" to begin your reservation...</span>
+            </div>
+        </div>
+        <div id="chat" role="log" aria-live="polite"></div>
+    </div>
+
+    <div class="bottom-bar">
+        <button id="startBtn" aria-label="Start Voice Call" class="btn-start">
+            📞 Start Call
+        </button>
+        <button id="endBtn" aria-label="End Voice Call" class="btn-end" disabled>
+            🚫 End Call
+        </button>
+    </div>
+
+    <div class="admin-link">
+        <a href="/admin" target="_blank">Admin Panel</a>
+    </div>
+
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

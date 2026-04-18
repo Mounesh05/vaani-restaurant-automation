@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+env/
+ENV/
+
+# Environment variables (CRITICAL - has secrets)
+.env
+*.env
+!.env.example
+
+# Database
+bookings.db
+*.db
+*.sqlite3
+*.db-wal
+*.db-shm
+
+# RAG/ChromaDB
+chroma_db/
+_hashes.json
+
+# QR codes (user-generated)
+static/qr/*.png
+!static/qr/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Twilio/ngrok
+ngrok.exe
+static/ngrok.exe
+
+# Audio files (TTS output)
+speech.mp3
+test.mp3
+*.mp3
+
+# Temporary files
+*.tmp
+*.bak

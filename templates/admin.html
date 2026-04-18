@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — AM Restaurant</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+<div class="admin-shell">
+    <section class="admin-card">
+
+        <header class="topbar">
+            <div class="topbar-main">
+                <span class="identity-badge" aria-hidden="true">AM</span>
+                <div>
+                    <p class="eyebrow">Reservation Operations</p>
+                    <h1>Admin Control Room</h1>
+                    <p>Review bookings, apply filters, and manage confirmations with confidence.</p>
+                </div>
+            </div>
+            <a href="/admin/logout" class="logout-btn">Logout</a>
+        </header>
+
+        <!-- ── Stats ─────────────────────────────────────────────────────── -->
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span class="stat-label">Total Bookings</span>
+                <span class="stat-value">{{ stats.total }}</span>
+            </article>
+            <article class="stat-card stat-confirmed">
+                <span class="stat-label">Confirmed</span>
+                <span class="stat-value">{{ stats.confirmed }}</span>
+            </article>
+            <article class="stat-card stat-cancelled">
+                <span class="stat-label">Cancelled</span>
+                <span class="stat-value">{{ stats.cancelled }}</span>
+            </article>
+            <article class="stat-card stat-today">
+                <span class="stat-label">Today</span>
+                <span class="stat-value">{{ stats.today }}</span>
+            </article>
+        </section>
+
+        <!-- ── Filter / Search (GET — no CSRF needed for read-only) ──────── -->
+        <form action="/admin" method="GET" class="search-row">
+            <input type="hidden" name="page" value="1">
+
+            <input
+                type="text"
+                name="query"
+                placeholder="Search by name or phone"
+                value="{{ filters.query }}"
+                maxlength="200"
+            >
+
+            <select name="status">
+                <option value="all"       {% if filters.status == 'all'       %}selected{% endif %}>All statuses</option>
+                <option value="confirmed" {% if filters.status == 'confirmed' %}selected{% endif %}>Confirmed only</option>
+                <option value="cancelled" {% if filters.status == 'cancelled' %}selected{% endif %}>Cancelled only</option>
+            </select>
+
+            <input
+                type="date"
+                name="date_from"
+                value="{{ filters.date_from }}"
+                aria-label="From date"
+            >
+
+            <input
+                type="date"
+                name="date_to"
+                value="{{ filters.date_to }}"
+                aria-label="To date"
+            >
+
+            <select name="page_size" aria-label="Rows per page">
+                <option value="10"  {% if page_size == 10  %}selected{% endif %}>10 / page</option>
+                <option value="20"  {% if page_size == 20  %}selected{% endif %}>20 / page</option>
+                <option value="50"  {% if page_size == 50  %}selected{% endif %}>50 / page</option>
+                <option value="100" {% if page_size == 100 %}selected{% endif %}>100 / page</option>
+            </select>
+
+            <button type="submit" class="primary-btn">Apply</button>
+            <a href="/admin" class="secondary-btn">Reset</a>
+            <a
+                class="secondary-btn export-btn"
+                href="{{ url_for('admin_export',
+                            query=filters.query,
+                            status=filters.status,
+                            date_from=filters.date_from,
+                            date_to=filters.date_to) }}"
+            >Export CSV</a>
+        </form>
+
+        <div class="meta-row">
+            <span>Showing {{ bookings|length }} of {{ total }} bookings</span>
+            <span>Page {{ page }} of {{ total_pages }}</span>
+        </div>
+
+        <!-- ── Bookings table ─────────────────────────────────────────────── -->
+        {% if bookings %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Guests</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr class="row-{{ b[6] }}">
+                        <td data-label="ID">{{ b[0] }}</td>
+                        <td data-label="Date">{{ b[1] }}</td>
+                        <td data-label="Time">{{ b[2] }}</td>
+                        <td data-label="Guests">{{ b[3] }}</td>
+                        <td data-label="Name">{{ b[4] }}</td>
+                        <td data-label="Phone">{{ b[5] }}</td>
+                        <td data-label="Status">
+                            <span class="status-pill
+                                {% if b[6] == 'confirmed' %}status-confirmed{% else %}status-cancelled{% endif %}">
+                                {{ b[6]|capitalize }}
+                            </span>
+                        </td>
+                        <td data-label="Action">
+
+                            {# ── Cancel (POST + CSRF) ────────────────────── #}
+                            {% if b[6] == 'confirmed' %}
+                            <form
+                                method="POST"
+                                action="{{ url_for('admin_cancel_route', id=b[0],
+                                            query=filters.query,
+                                            status=filters.status,
+                                            date_from=filters.date_from,
+                                            date_to=filters.date_to,
+                                            page=page,
+                                            page_size=page_size,
+                                            next=request.full_path) }}"
+                                class="admin-action-form"
+                                data-action="cancel"
+                                data-name="{{ b[4] | e }}"
+                                data-date="{{ b[1] }}"
+                                data-time="{{ b[2] }}"
+                            >
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="cancel-btn">Cancel</button>
+                            </form>
+
+                            {# ── Restore (POST + CSRF) ───────────────────── #}
+                            {% else %}
+                            <form
+                                method="POST"
+                                action="{{ url_for('admin_restore_route', id=b[0],
+                                            query=filters.query,
+                                            status=filters.status,
+                                            date_from=filters.date_from,
+                                            date_to=filters.date_to,
+                                            page=page,
+                                            page_size=page_size,
+                                            next=request.full_path) }}"
+                                class="admin-action-form"
+                                data-action="restore"
+                                data-name="{{ b[4] | e }}"
+                                data-date="{{ b[1] }}"
+                                data-time="{{ b[2] }}"
+                            >
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="restore-btn">Restore</button>
+                            </form>
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ── Pagination ─────────────────────────────────────────────────── -->
+        {% if total_pages > 1 %}
+        <nav class="pager" aria-label="Pagination">
+            {% if page > 1 %}
+            <a
+                class="pager-link"
+                href="{{ url_for('admin',
+                            query=filters.query,
+                            status=filters.status,
+                            date_from=filters.date_from,
+                            date_to=filters.date_to,
+                            page=page-1,
+                            page_size=page_size) }}"
+            >Previous</a>
+            {% else %}
+            <span class="pager-link disabled" aria-disabled="true">Previous</span>
+            {% endif %}
+
+            <span class="pager-current">Page {{ page }} / {{ total_pages }}</span>
+
+            {% if page < total_pages %}
+            <a
+                class="pager-link"
+                href="{{ url_for('admin',
+                            query=filters.query,
+                            status=filters.status,
+                            date_from=filters.date_from,
+                            date_to=filters.date_to,
+                            page=page+1,
+                            page_size=page_size) }}"
+            >Next</a>
+            {% else %}
+            <span class="pager-link disabled" aria-disabled="true">Next</span>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <h3>No bookings found yet</h3>
+            <p>Adjust filters or click Reset to view all reservations.</p>
+        </div>
+        {% endif %}
+
+    </section>
+</div>
+<script src="/static/js/admin.js"></script>
+</body>
+</html>
