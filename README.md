@@ -89,7 +89,7 @@ vaani-restaurant-automation/
 ### 1. Clone repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/vaani-restaurant-automation.git
+git clone https://github.com/Mounesh05/vaani-restaurant-automation.git
 cd vaani-restaurant-automation
 ```
 
