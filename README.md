@@ -313,14 +313,13 @@ python rag_store.py
 
 ---
 
-## 👤 Author
+## 👤 Authors
 
 **Mounesh S D**  
 - Undergraduate AI/ML Student, Dr. AIT Bengaluru (Batch 2023-2027)
-- Research Intern, IISc
-
-**Project Context**: Academic research project demonstrating AI-powered restaurant automation with RAG, NLP, and real-time integrations.
-
+**Ayush A Waster**
+  - Undergraduate AI/ML Student, Dr. AIT Bengaluru (Batch 2023-2027)
+**Project Context**: Academic research project demonstrating AI-powered restaurant automation with RAG, NLP, and real-time integrations
 ---
 
 ## 📄 License
