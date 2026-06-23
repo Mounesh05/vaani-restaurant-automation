@@ -317,8 +317,10 @@ python rag_store.py
 
 **Mounesh S D**  
 - Undergraduate AI/ML Student, Dr. AIT Bengaluru (Batch 2023-2027)
+
 **Ayush A Waster**
   - Undergraduate AI/ML Student, Dr. AIT Bengaluru (Batch 2023-2027)
+  
 **Project Context**: Academic research project demonstrating AI-powered restaurant automation with RAG, NLP, and real-time integrations
 ---
 
